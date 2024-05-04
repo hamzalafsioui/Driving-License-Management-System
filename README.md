@@ -35,4 +35,5 @@ Users can perform actions such as adding or updating driving license application
 * System Administration:
 Administrators have additional privileges to manage application and test types, view system-wide information, and maintain security settings.
 ### Note:
-Certain features are marked as "Not Implemented Yet" in the interface, indicating planned enhancements or areas under development.
+* Certain features are marked as "Not Implemented Yet" in the interface, indicating planned enhancements or areas under development.
+* Feel free to contribute to the project by opening issues or submitting pull requests. For any queries, contact us at hamzalafsioui@gmail.com
