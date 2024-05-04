@@ -20,6 +20,7 @@ namespace DVLD
 
     public partial class frmMain : Form
     {
+        // Define a form Login
         frmLogin _frmLogin;
 
         public frmMain(frmLogin frm)
@@ -28,7 +29,8 @@ namespace DVLD
             _frmLogin = frm;
 
         }
-       
+
+
         private void localLicenseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmAddUpdateLocalDrivingLicenseApplication frm = new frmAddUpdateLocalDrivingLicenseApplication();
@@ -137,8 +139,6 @@ namespace DVLD
             frm.ShowDialog();
 
         }
-
-
 
         private void ManageInternationalDrivingLicenseToolStripMenuItem1_Click(object sender, EventArgs e)
         {
