@@ -26,6 +26,12 @@ Includes placeholders for upcoming features such as managing vehicle licenses an
 * Database: Microsoft SQL Server
 * Data Access: ADO.NET
 ## Usage Instructions:
+* Database Location:
+  The application reads data from a database file located at the following path: ``` C:\DVLD.bak ```
+  
+  1- Navigate to the ``` "Database" ``` Folder within the project directory.
+  
+  2- Copy the database file ``` DVLD.bak ``` to path ``` "C:\" ```
 * Login:
 Users must log in using valid credentials to access the system.
 * Navigation:
