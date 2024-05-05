@@ -1,14 +1,9 @@
-﻿using DVLD.Licenses.International_License;
+﻿using DVLD.Applications.International_License;
+using DVLD.Licenses.International_License;
 using DVLD.People;
 using DVLD_Business;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DVLD.Drivers
@@ -16,7 +11,8 @@ namespace DVLD.Drivers
     public partial class frmListDrivers : Form
     {
         private DataTable _dtAllDrivers;
-
+        private int _PersonID = -1;
+        private int _DriverID = -1;
         public frmListDrivers()
         {
             InitializeComponent();
@@ -34,7 +30,7 @@ namespace DVLD.Drivers
             _dtAllDrivers = clsDriver.GetAllDrivers();
             dgvDrivers.DataSource = _dtAllDrivers;
             lblRecordsCount.Text = dgvDrivers.Rows.Count.ToString();
-            if (dgvDrivers.Rows.Count>0)
+            if (dgvDrivers.Rows.Count > 0)
             {
                 dgvDrivers.Columns[0].HeaderText = "Driver ID";
                 dgvDrivers.Columns[0].Width = 120;
@@ -54,7 +50,7 @@ namespace DVLD.Drivers
                 dgvDrivers.Columns[5].HeaderText = "Active Licenses";
                 dgvDrivers.Columns[5].Width = 150;
             }
-          
+
 
 
         }
@@ -62,7 +58,7 @@ namespace DVLD.Drivers
         private void cbFilterBy_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtFilterValue.Visible = (cbFilterBy.Text != "None");
-         
+
 
             if (cbFilterBy.Text == "None")
             {
@@ -141,16 +137,45 @@ namespace DVLD.Drivers
 
         private void issueInternationalLicenseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Not implemented yet.");
+            //MessageBox.Show("Not implemented yet.");
+
+            _PersonID = (int)dgvDrivers.CurrentRow.Cells[1].Value;
+            int LicenseID = clsLicense.GetActiveLicenseIDByPersonID(_PersonID, 3);
+            if (LicenseID == -1)
+            {
+                MessageBox.Show("To issue International License you should have Ordinary License class", "Issue International License", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+            frmNewInternationalLicenseApplication frm = new frmNewInternationalLicenseApplication(LicenseID);
+            frm.ShowDialog();
+
         }
 
         private void showPersonLicenseHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int PersonID = (int)dgvDrivers.CurrentRow.Cells[1].Value;
 
-          
+
             frmShowPersonLicenseHistory frm = new frmShowPersonLicenseHistory(PersonID);
             frm.ShowDialog();
+        }
+
+        private void cmsDrivers_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _PersonID = (int)dgvDrivers.CurrentRow.Cells[1].Value;
+            _DriverID = (int)dgvDrivers.CurrentRow.Cells[0].Value;
+
+            int InternationalLicenseID = clsInternationalLicense.GetActiveInternationalLicenseIDByDriverID(_DriverID);
+            if (InternationalLicenseID != -1)
+            {
+                issueInternationalLicenseToolStripMenuItem.Enabled = false;
+                return;
+            }
+            else
+            {
+                issueInternationalLicenseToolStripMenuItem.Enabled = true;
+
+            }
         }
     }
 }

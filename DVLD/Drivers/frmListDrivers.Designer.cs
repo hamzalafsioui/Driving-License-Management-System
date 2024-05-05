@@ -116,7 +116,8 @@
             this.toolStripSeparator1,
             this.showPersonLicenseHistoryToolStripMenuItem});
             this.cmsDrivers.Name = "contextMenuStrip1";
-            this.cmsDrivers.Size = new System.Drawing.Size(242, 130);
+            this.cmsDrivers.Size = new System.Drawing.Size(242, 152);
+            this.cmsDrivers.Opening += new System.ComponentModel.CancelEventHandler(this.cmsDrivers_Opening);
             // 
             // showDetailsToolStripMenuItem
             // 

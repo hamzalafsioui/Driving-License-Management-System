@@ -1,19 +1,11 @@
 ﻿using DVLD.Applications;
+using DVLD.DriverLicense;
+using DVLD.Licenses.International_License;
 using DVLD_Business;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
-using DVLD.DriverLicense;
-using System.Security.Cryptography;
-using DVLD.Drivers;
-using DVLD.Licenses.International_License;
 
 namespace DVLD.Tests
 {
@@ -29,9 +21,9 @@ namespace DVLD.Tests
         {
             _dtAllLocalDrivingLicenseApplications = clsLocalDrivingLicenseApplication.GetAllLocalDrivingLicenseApplications();
             dgvLocalDrivingLicenseApplications.DataSource = _dtAllLocalDrivingLicenseApplications;
-            
+
             lblRecordsCount.Text = dgvLocalDrivingLicenseApplications.Rows.Count.ToString();
-            if (dgvLocalDrivingLicenseApplications.Rows.Count>0)
+            if (dgvLocalDrivingLicenseApplications.Rows.Count > 0)
             {
 
                 dgvLocalDrivingLicenseApplications.Columns[0].HeaderText = "L.D.L.AppID";
@@ -114,7 +106,7 @@ namespace DVLD.Tests
 
             }
 
-            //Reset the filters in case nothing selected or filter value conains nothing.
+            //Reset the filters in case nothing selected or filter value contains nothing.
             if (txtFilterValue.Text.Trim() == "" || FilterColumn == "None")
             {
                 _dtAllLocalDrivingLicenseApplications.DefaultView.RowFilter = "";
@@ -236,7 +228,7 @@ namespace DVLD.Tests
             frmListLocalDrivingLicesnseApplications_Load(null, null);
 
         }
-      
+
         private void scheduleVisionTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ScheduleTest(clsTestType.enTestType.VisionTest);
@@ -285,19 +277,19 @@ namespace DVLD.Tests
 
             //Enabled only if person passed all tests and Does not have license. 
             issueDrivingLicenseFirstTimeToolStripMenuItem.Enabled = (TotalPassedTests == 3) && !LicenseExists;
-            
+
             showLicenseToolStripMenuItem.Enabled = LicenseExists;
             editToolStripMenuItem.Enabled = !LicenseExists && (LocalDrivingLicenseApplication.ApplicationStatus == clsApplication.enApplicationStatus.New);
             ScheduleTestsMenue.Enabled = !LicenseExists;
 
             //Enable/Disable Cancel Menu Item
             //We only cancel the applications with status=new.
-            CancelApplicaitonToolStripMenuItem.Enabled = (LocalDrivingLicenseApplication.ApplicationStatus==clsApplication.enApplicationStatus.New);
+            CancelApplicaitonToolStripMenuItem.Enabled = (LocalDrivingLicenseApplication.ApplicationStatus == clsApplication.enApplicationStatus.New);
 
             //Enable/Disable Delete Menu Item
             //We only allow delete incase the application status is new not complete or Cancelled.
-            DeleteApplicationToolStripMenuItem.Enabled = 
-                (LocalDrivingLicenseApplication.ApplicationStatus == clsApplication.enApplicationStatus.New );
+            DeleteApplicationToolStripMenuItem.Enabled =
+                (LocalDrivingLicenseApplication.ApplicationStatus == clsApplication.enApplicationStatus.New);
 
 
 

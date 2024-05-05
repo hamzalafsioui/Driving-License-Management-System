@@ -1,30 +1,29 @@
 ﻿using DVLD.Classes;
-using DVLD.DriverLicense;
 using DVLD.Licenses.International_License;
 using DVLD.Licenses.International_Licenses;
 using DVLD_Business;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.ExceptionServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static DVLD_Business.clsApplication;
 
 namespace DVLD.Applications.International_License
 {
     public partial class frmNewInternationalLicenseApplication : Form
     {
-        
+
         private int _InternationalLicenseID = -1;
-      
+       
+
         public frmNewInternationalLicenseApplication()
         {
             InitializeComponent();
+        }
+        public frmNewInternationalLicenseApplication(int LicenseID)
+        {
+            InitializeComponent();
+            ctrlDriverLicenseInfoWithFilter1.LoadLicenseInfo(LicenseID);
+            ctrlDriverLicenseInfoWithFilter1.FilterEnabled = false;
+
+
         }
 
         private void ctrlDriverLicenseInfoWithFilter1_OnLicenseSelected(int obj)
@@ -34,15 +33,15 @@ namespace DVLD.Applications.International_License
 
             llShowLicenseHistory.Enabled = (SelectedLicenseID != -1);
 
-            if (SelectedLicenseID == -1) 
-            
+            if (SelectedLicenseID == -1)
+
             {
                 return;
             }
 
-            
 
-          
+
+
             //check the license class, person could not issue international license without having
             //normal license of class 3.
 
@@ -80,7 +79,7 @@ namespace DVLD.Applications.International_License
 
         private void frmNewInternationalLicenseApplication_Load(object sender, EventArgs e)
         {
-           
+
 
             lblApplicationDate.Text = clsFormat.DateToShort(DateTime.Now);
             lblIssueDate.Text = lblApplicationDate.Text;
@@ -98,19 +97,19 @@ namespace DVLD.Applications.International_License
 
         private void btnIssueLicense_Click(object sender, EventArgs e)
         {
-           
-            if ( MessageBox.Show("Are you sure you want to issue the license?","Confirm",MessageBoxButtons.YesNo ,MessageBoxIcon.Question)==DialogResult.No)
+
+            if (MessageBox.Show("Are you sure you want to issue the license?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
             {
                 return;
             }
 
-           
-
-          
 
 
-           clsInternationalLicense InternationalLicense= new clsInternationalLicense();
-            //those are the information for the base application, because it inhirts from application, they are part of the sub class.
+
+
+
+            clsInternationalLicense InternationalLicense = new clsInternationalLicense();
+            //those are the information for the base application, because it inherits from application, they are part of the sub class.
 
             InternationalLicense.ApplicantPersonID = ctrlDriverLicenseInfoWithFilter1.SelectedLicenseInfo.DriverInfo.PersonID;
             InternationalLicense.ApplicationDate = DateTime.Now;
@@ -119,17 +118,17 @@ namespace DVLD.Applications.International_License
             InternationalLicense.PaidFees = clsApplicationType.Find((int)clsApplication.enApplicationType.NewInternationalLicense).Fees;
             InternationalLicense.CreatedByUserID = clsGlobal.CurrentUser.UserID;
 
-           
-            InternationalLicense.DriverID= ctrlDriverLicenseInfoWithFilter1.SelectedLicenseInfo.DriverID;
+
+            InternationalLicense.DriverID = ctrlDriverLicenseInfoWithFilter1.SelectedLicenseInfo.DriverID;
             InternationalLicense.IssuedUsingLocalLicenseID = ctrlDriverLicenseInfoWithFilter1.SelectedLicenseInfo.LicenseID;
-            InternationalLicense.IssueDate= DateTime.Now;
-            InternationalLicense.ExpirationDate= DateTime.Now.AddYears(1);
-           
+            InternationalLicense.IssueDate = DateTime.Now;
+            InternationalLicense.ExpirationDate = DateTime.Now.AddYears(1);
+
             InternationalLicense.CreatedByUserID = clsGlobal.CurrentUser.UserID;
 
             if (!InternationalLicense.Save())
             {
-                MessageBox.Show("Faild to Issue International License" , "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Failed to Issue International License", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return;
             }
@@ -137,7 +136,7 @@ namespace DVLD.Applications.International_License
             lblApplicationID.Text = InternationalLicense.ApplicationID.ToString();
             _InternationalLicenseID = InternationalLicense.InternationalLicenseID;
             lblInternationalLicenseID.Text = InternationalLicense.InternationalLicenseID.ToString();
-            MessageBox.Show("International License Issued Successfully with ID=" + InternationalLicense.InternationalLicenseID.ToString() , "License Issued", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("International License Issued Successfully with ID=" + InternationalLicense.InternationalLicenseID.ToString(), "License Issued", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             btnIssueLicense.Enabled = false;
             ctrlDriverLicenseInfoWithFilter1.FilterEnabled = false;
@@ -148,9 +147,9 @@ namespace DVLD.Applications.International_License
 
         private void llShowDriverLicenseHistory_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-           
 
-            frmShowPersonLicenseHistory  frm = 
+
+            frmShowPersonLicenseHistory frm =
                 new frmShowPersonLicenseHistory(ctrlDriverLicenseInfoWithFilter1.SelectedLicenseInfo.DriverInfo.PersonID);
             frm.ShowDialog();
 
