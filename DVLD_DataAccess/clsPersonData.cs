@@ -16,10 +16,11 @@ namespace DVLD_DataAccess
 
 			using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
 			{
-				string query = "SELECT * FROM People WHERE PersonID = @PersonID";
+				//string query = "SELECT * FROM People WHERE PersonID = @PersonID";
 
-				using (SqlCommand command = new SqlCommand(query, connection))
+				using (SqlCommand command = new SqlCommand("SP_GetPersonInfoByID", connection))
 				{
+					command.CommandType = CommandType.StoredProcedure;
 					command.Parameters.AddWithValue("@PersonID", PersonID);
 
 					try
@@ -36,14 +37,9 @@ namespace DVLD_DataAccess
 								SecondName = (string)reader["SecondName"];
 
 								//ThirdName: allows null in database so we should handle null
-								if (reader["ThirdName"] != DBNull.Value)
-								{
-									ThirdName = (string)reader["ThirdName"];
-								}
-								else
-								{
-									ThirdName = "";
-								}
+
+								ThirdName = reader["ThirdName"] as string ?? "";
+
 
 								LastName = (string)reader["LastName"];
 								NationalNo = (string)reader["NationalNo"];
@@ -52,29 +48,12 @@ namespace DVLD_DataAccess
 								Address = (string)reader["Address"];
 								Phone = (string)reader["Phone"];
 
-
 								//Email: allows null in database so we should handle null
-								if (reader["Email"] != DBNull.Value)
-								{
-									Email = (string)reader["Email"];
-								}
-								else
-								{
-									Email = "";
-								}
-
+								Email = reader["Email"] as string ?? "";
 								NationalityCountryID = (int)reader["NationalityCountryID"];
 
 								//ImagePath: allows null in database so we should handle null
-								if (reader["ImagePath"] != DBNull.Value)
-								{
-									ImagePath = (string)reader["ImagePath"];
-								}
-								else
-								{
-									ImagePath = "";
-								}
-
+								ImagePath = reader["ImagePath"] as string ?? "";
 							}
 							else
 							{
@@ -105,9 +84,10 @@ namespace DVLD_DataAccess
 			{
 				using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
 				{
-					string query = "SELECT * FROM People WHERE NationalNo = @NationalNo";
-					using (SqlCommand command = new SqlCommand(query, connection))
+					//string query = "SELECT * FROM People WHERE NationalNo = @NationalNo";
+					using (SqlCommand command = new SqlCommand("SP_GetPersonInfoByNationalNo", connection))
 					{
+						command.CommandType = CommandType.StoredProcedure;
 						command.Parameters.AddWithValue("@NationalNo", NationalNo);
 						connection.Open();
 						using (SqlDataReader reader = command.ExecuteReader())
@@ -120,17 +100,7 @@ namespace DVLD_DataAccess
 								PersonID = (int)reader["PersonID"];
 								FirstName = (string)reader["FirstName"];
 								SecondName = (string)reader["SecondName"];
-
-								//ThirdName: allows null in database so we should handle null
-								if (reader["ThirdName"] != DBNull.Value)
-								{
-									ThirdName = (string)reader["ThirdName"];
-								}
-								else
-								{
-									ThirdName = "";
-								}
-
+								ThirdName = reader["ThirdName"] as string ?? "";
 								LastName = (string)reader["LastName"];
 								DateOfBirth = (DateTime)reader["DateOfBirth"];
 								Gendor = (byte)reader["Gendor"];
@@ -138,26 +108,13 @@ namespace DVLD_DataAccess
 								Phone = (string)reader["Phone"];
 
 								//Email: allows null in database so we should handle null
-								if (reader["Email"] != DBNull.Value)
-								{
-									Email = (string)reader["Email"];
-								}
-								else
-								{
-									Email = "";
-								}
+								Email = reader["Email"] as string ?? "";
 
 								NationalityCountryID = (int)reader["NationalityCountryID"];
 
 								//ImagePath: allows null in database so we should handle null
-								if (reader["ImagePath"] != DBNull.Value)
-								{
-									ImagePath = (string)reader["ImagePath"];
-								}
-								else
-								{
-									ImagePath = "";
-								}
+								ImagePath = reader["ImagePath"] as string ?? "";
+
 
 							}
 							else
@@ -187,8 +144,6 @@ namespace DVLD_DataAccess
 
 			using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
 			{
-				
-
 				using (SqlCommand command = new SqlCommand("SP_AddNewPerson", connection))
 				{
 					command.CommandType = CommandType.StoredProcedure;
@@ -225,7 +180,7 @@ namespace DVLD_DataAccess
 					command.Parameters.Add(outputIdParam);
 					try
 					{
-					
+
 						// Execute
 						connection.Open();
 						command.ExecuteNonQuery();
@@ -247,78 +202,43 @@ namespace DVLD_DataAccess
 
 
 
-		public static bool UpdatePerson(int PersonID, string FirstName, string SecondName,
-		   string ThirdName, string LastName, string NationalNo, DateTime DateOfBirth,
-		   short Gendor, string Address, string Phone, string Email,
-			int NationalityCountryID, string ImagePath)
+		public static bool UpdatePerson(int PersonID, string FirstName, string SecondName, string ThirdName, string LastName, string NationalNo, DateTime DateOfBirth, short Gendor, string Address, string Phone, string Email, int NationalityCountryID, string ImagePath)
 		{
-
 			int rowsAffected = 0;
 			using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
 			{
-				string query = @"Update  People  
-                            set FirstName = @FirstName,
-                                SecondName = @SecondName,
-                                ThirdName = @ThirdName,
-                                LastName = @LastName, 
-                                NationalNo = @NationalNo,
-                                DateOfBirth = @DateOfBirth,
-                                Gendor=@Gendor,
-                                Address = @Address,  
-                                Phone = @Phone,
-                                Email = @Email, 
-                                NationalityCountryID = @NationalityCountryID,
-                                ImagePath =@ImagePath
-                                where PersonID = @PersonID";
-
-				using (SqlCommand command = new SqlCommand(query, connection))
+				using (SqlCommand command = new SqlCommand("SP_UpdatePerson", connection))
 				{
+					command.CommandType = CommandType.StoredProcedure;
 					command.Parameters.AddWithValue("@PersonID", PersonID);
 					command.Parameters.AddWithValue("@FirstName", FirstName);
 					command.Parameters.AddWithValue("@SecondName", SecondName);
-
-					if (ThirdName != "" && ThirdName != null)
-						command.Parameters.AddWithValue("@ThirdName", ThirdName);
-					else
-						command.Parameters.AddWithValue("@ThirdName", System.DBNull.Value);
-
-
+					command.Parameters.AddWithValue("@ThirdName", string.IsNullOrEmpty(ThirdName) ? (object)DBNull.Value : ThirdName);
 					command.Parameters.AddWithValue("@LastName", LastName);
 					command.Parameters.AddWithValue("@NationalNo", NationalNo);
 					command.Parameters.AddWithValue("@DateOfBirth", DateOfBirth);
 					command.Parameters.AddWithValue("@Gendor", Gendor);
 					command.Parameters.AddWithValue("@Address", Address);
 					command.Parameters.AddWithValue("@Phone", Phone);
-
-					if (Email != "" && Email != null)
-						command.Parameters.AddWithValue("@Email", Email);
-					else
-						command.Parameters.AddWithValue("@Email", System.DBNull.Value);
-
+					command.Parameters.AddWithValue("@Email", string.IsNullOrEmpty(Email) ? (object)DBNull.Value : Email);
 					command.Parameters.AddWithValue("@NationalityCountryID", NationalityCountryID);
-
-					if (ImagePath != "" && ImagePath != null)
-						command.Parameters.AddWithValue("@ImagePath", ImagePath);
-					else
-						command.Parameters.AddWithValue("@ImagePath", System.DBNull.Value);
-
+					command.Parameters.AddWithValue("@ImagePath", string.IsNullOrEmpty(ImagePath) ? (object)DBNull.Value : ImagePath);
 
 					try
 					{
 						connection.Open();
 						rowsAffected = command.ExecuteNonQuery();
-
 					}
 					catch (Exception ex)
 					{
 						clsDataAccessLogs.CreateExceptionLog(ex.ToString());
-						return false;
+
 					}
 				}
 			}
-
-			return (rowsAffected > 0);
+			return rowsAffected > 0;
 		}
+
 
 
 		public static DataTable GetAllPeople()
@@ -328,27 +248,25 @@ namespace DVLD_DataAccess
 			using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
 			{
 
-				string query =
-				  @"SELECT People.PersonID, People.NationalNo,
-              People.FirstName, People.SecondName, People.ThirdName, People.LastName,
-			  People.DateOfBirth, People.Gendor,  
-				  CASE
-                  WHEN People.Gendor = 0 THEN 'Male'
+				//string query =
+				//  @"SELECT People.PersonID, People.NationalNo,
+				//          People.FirstName, People.SecondName, People.ThirdName, People.LastName,
+				// People.DateOfBirth, People.Gendor,  
+				//  CASE
+				//              WHEN People.Gendor = 0 THEN 'Male'
 
-                  ELSE 'Female'
+				//              ELSE 'Female'
 
-                  END as GendorCaption ,
-			  People.Address, People.Phone, People.Email, 
-              People.NationalityCountryID, Countries.CountryName, People.ImagePath
-              FROM            People INNER JOIN
-                         Countries ON People.NationalityCountryID = Countries.CountryID
-                ORDER BY People.FirstName";
+				//              END as GendorCaption ,
+				// People.Address, People.Phone, People.Email, 
+				//          People.NationalityCountryID, Countries.CountryName, People.ImagePath
+				//          FROM            People INNER JOIN
+				//                     Countries ON People.NationalityCountryID = Countries.CountryID
+				//            ORDER BY People.FirstName";
 
-
-
-
-				using (SqlCommand command = new SqlCommand(query, connection))
+				using (SqlCommand command = new SqlCommand("SP_GetAllPeople", connection))
 				{
+					command.CommandType = CommandType.StoredProcedure;
 					try
 					{
 						connection.Open();
@@ -380,23 +298,21 @@ namespace DVLD_DataAccess
 
 			using (SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString))
 			{
-				string query = @"Delete People 
-                                where PersonID = @PersonID";
-
-				SqlCommand command = new SqlCommand(query, connection);
-
-				command.Parameters.AddWithValue("@PersonID", PersonID);
-
-				try
+				using (SqlCommand command = new SqlCommand("SP_DeletePersonByPersonID", connection))
 				{
-					connection.Open();
+					command.CommandType = CommandType.StoredProcedure;
+					command.Parameters.AddWithValue("@PersonID", PersonID);
+					try
+					{
+						connection.Open();
 
-					rowsAffected = command.ExecuteNonQuery();
+						rowsAffected = command.ExecuteNonQuery();
 
-				}
-				catch (Exception ex)
-				{
-					clsDataAccessLogs.CreateExceptionLog(ex.ToString());
+					}
+					catch (Exception ex)
+					{
+						clsDataAccessLogs.CreateExceptionLog(ex.ToString());
+					}
 				}
 			}
 
